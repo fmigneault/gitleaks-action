@@ -15,16 +15,18 @@ git fetch --quiet
 
 if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] 
 then
+    # scan only new commits contained within the PR
+    GITHUB_HEAD_SHA=$(git rev-parse "${GITHUB_HEAD_REF}")
     gitleaks -v --exclude-forks --redact --threads=1 \
-      --branch=$GITHUB_HEAD_REF \
-      --commit-to=$GITHUB_BASE_REF \
+      --commit-to=$GITHUB_HEAD_SHA \
+      --commit-from=$GITHUB_BASE_REF \
       --repo-path=$GITHUB_WORKSPACE
 else
     # branch/tag name in the form "refs/<ref-type>/<ref-id>[/<ref-subtype>]"
     # ref-type: heads|pull|tags
     GITHUB_REF_NAME="$(echo $GITHUB_REF | cut -d '/' -f3)"
     # run only from current to master instead of full history
-    GITHUB_REF_MASTER=$(git show 'origin/master' --pretty='format:%H')
+    GITHUB_REF_MASTER=$(git rev-parse 'origin/master')
     
     if [[ "${GITHUB_REF_NAME}" == "master" ]] 
     then
