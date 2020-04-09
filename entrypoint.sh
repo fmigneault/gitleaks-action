@@ -16,7 +16,7 @@ git fetch --quiet
 if [[ "${GITHUB_EVENT_NAME}" == "pull_request" ]] 
 then
     # scan only new commits contained within the PR
-    GITHUB_HEAD_SHA=$(git rev-parse "${GITHUB_HEAD_REF}")
+    GITHUB_HEAD_SHA=$(git rev-parse "origin/${GITHUB_HEAD_REF}")
     gitleaks -v --exclude-forks --redact --threads=1 \
       --commit-to=$GITHUB_HEAD_SHA \
       --commit-from=$GITHUB_BASE_REF \
