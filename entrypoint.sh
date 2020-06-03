@@ -30,7 +30,7 @@ then
         gitleaks -v --exclude-forks --redact --threads=1 \
             --commit-from=${GITHUB_HEAD_SHA} \
             --commit-to=${GITHUB_BASE_SHA} \
-            --repo-path=/repo
+            --repo-path=${GITHUB_WORKSPACE}
     else
         # 'normal' PR trigger, such as when the job to test new commits is re-run
         gitleaks -v --exclude-forks --redact --threads=1 \
