@@ -42,6 +42,7 @@ then
 else
     # branch/tag name in the form "refs/<ref-type>/<ref-id>[/<ref-subtype>]"
     # ref-type: heads|pull|tags
+    GITHUB_REF_TYPE="$(echo ${GITHUB_REF} | cut -d '/' -f2)"
     GITHUB_REF_NAME="$(echo ${GITHUB_REF} | cut -d '/' -f3)"
     # run only from current to master instead of full history
     GITHUB_REF_MASTER=$(git rev-parse 'origin/master')
@@ -53,6 +54,12 @@ else
         gitleaks -v --exclude-forks --redact --threads=1 \
           --branch=${GITHUB_REF_NAME} \
           --depth=1 \
+          --repo-path=${GITHUB_WORKSPACE}
+    elif [[ "${GITHUB_REF_TYPE}" == "tags" ]]
+    then
+        gitleaks -v --exclude-forks --redact --threads=1 \
+          --commit-to=${GITHUB_SHA} \
+          --commit-from=${GITHUB_REF_MASTER} \
           --repo-path=${GITHUB_WORKSPACE}
     else
         gitleaks -v --exclude-forks --redact --threads=1 \
