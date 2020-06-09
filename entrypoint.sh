@@ -35,8 +35,9 @@ then
         # commits between source and destination branches are inverted (flip commit-to/from)
         gitleaks -v --exclude-forks --redact --threads=1 \
             --commit-from=${GITHUB_HEAD_SHA} \
-            --commit-to=${GITHUB_BASE_SHA} \
-            --repo-path=${GITHUB_WORKSPACE}
+            --commit-to=${GITHUB_BASE_SHA}
+            # \
+            #--repo-path=${GITHUB_WORKSPACE}
     else
         # 'normal' PR trigger, such as when the job to test new commits is re-run
         gitleaks -v --exclude-forks --redact --threads=1 \
@@ -70,6 +71,11 @@ else
         gitleaks -v --exclude-forks --redact --threads=1 \
           --commit-to=${GITHUB_SHA} \
           --commit-from=${GITHUB_REF_MASTER} \
+          --repo-path=${GITHUB_WORKSPACE}
+    elif [[ "${GITHUB_REF_TYPE}" == "heads" ]]
+    then
+        gitleaks -v --exclude-forks --redact --threads=1 \
+          --commit=${GITHUB_SHA} \
           --repo-path=${GITHUB_WORKSPACE}
     else
         gitleaks -v --exclude-forks --redact --threads=1 \
