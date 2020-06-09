@@ -9,6 +9,7 @@ echo "GITHUB_SHA:        ${GITHUB_SHA}"
 echo "GITHUB_REF:        ${GITHUB_REF}"
 echo "GITHUB_HEAD_REF:   ${GITHUB_HEAD_REF}"
 echo "GITHUB_BASE_REF:   ${GITHUB_BASE_REF}"
+echo "GITHUB_WORKSPACE:  ${GITHUB_WORKSPACE}"
 
 cd "$GITHUB_WORKSPACE"
 git fetch --quiet
@@ -22,6 +23,11 @@ then
     # when PR refers to a merge commit, we need to tweak values
     # scan github reference for final 'merge' in 'refs/pull/<pr-id>/merge'
     GITHUB_REF_NAME="$(echo ${GITHUB_REF} | cut -d '/' -f4)"
+
+    echo "GITHUB_HEAD_SHA:   ${GITHUB_HEAD_SHA}"
+    echo "GITHUB_BASE_SHA:   ${GITHUB_BASE_SHA}"
+    echo "GITHUB_REF_NAME:   ${GITHUB_REF_NAME}"
+
     (set -o xtrace;
     if [[ "${GITHUB_REF_NAME}" == "merge" ]]
     then
@@ -46,6 +52,10 @@ else
     GITHUB_REF_NAME="$(echo ${GITHUB_REF} | cut -d '/' -f3)"
     # run only from current to master instead of full history
     GITHUB_REF_MASTER=$(git rev-parse 'origin/master')
+
+    echo "GITHUB_REF_MASTER: ${GITHUB_REF_MASTER}"
+    echo "GITHUB_REF_TYPE:   ${GITHUB_REF_TYPE}"
+    echo "GITHUB_REF_NAME:   ${GITHUB_REF_NAME}"
 
     (set -o xtrace;
     if [[ "${GITHUB_REF_NAME}" == "master" ]]
